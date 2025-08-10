@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Isometric Sketchpad</title>
+  <title>Isometric Sketchpad | NajahCreates</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="m-0 overflow-hidden">
@@ -12,10 +12,15 @@
     <button onclick="saveLines()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-3 py-1 rounded">💾 Save</button>
     <button onclick="undo()" class="bg-zinc-700 hover:bg-zinc-600 text-white text-sm px-3 py-1 rounded">↩️ Undo</button>
     <button onclick="redo()" class="bg-zinc-700 hover:bg-zinc-600 text-white text-sm px-3 py-1 rounded">🔁 Redo</button>
-    <input id="fileLoader" type="file" accept=".isk" class="text-sm text-white bg-zinc-700 rounded cursor-pointer file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-zinc-600 file:text-white" />
+    <input id="fileLoader" type="file" accept=".isk" class="text-sm text-white bg-zinc-700 rounded cursor-pointer file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-zinc-600"/>
   </div>
 
   <canvas id="canvas" class="block w-full h-full"></canvas>
+
+  <!-- Made with ❤️ NajahCreates -->
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-zinc-400 text-sm bg-zinc-800/80 px-4 py-2 rounded-xl shadow-lg flex items-center">
+    Made with <span class="mx-1 text-red-500">❤️</span> NajahCreates
+  </div>
 
   <script>
     const dx = 40;
@@ -24,7 +29,6 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-
     let offsetX = canvas.width / 2;
     let offsetY = canvas.height / 2;
     let dragging = false;
@@ -32,16 +36,17 @@
     let lines = [];
     let undoneLines = [];
     let selectedPoint = null;
-    
+
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      offsetX = canvas.width / 2;
+      offsetY = canvas.height / 2;
       drawGrid();
     }
 
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
-
 
     function isoToScreen(x, y) {
       return {
@@ -96,16 +101,32 @@
       });
     }
 
+    function getEventPosition(e) {
+      // Support both touch and mouse events
+      if (e.touches && e.touches.length > 0) {
+        return {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        };
+      } else {
+        return {
+          x: e.clientX,
+          y: e.clientY
+        };
+      }
+    }
+
     canvas.addEventListener("mousedown", (e) => {
       dragging = true;
-      dragStart = { x: e.clientX, y: e.clientY };
+      dragStart = getEventPosition(e);
     });
 
     canvas.addEventListener("mousemove", (e) => {
       if (dragging) {
-        offsetX += e.clientX - dragStart.x;
-        offsetY += e.clientY - dragStart.y;
-        dragStart = { x: e.clientX, y: e.clientY };
+        const pos = getEventPosition(e);
+        offsetX += pos.x - dragStart.x;
+        offsetY += pos.y - dragStart.y;
+        dragStart = pos;
         drawGrid();
       }
     });
@@ -113,9 +134,36 @@
     canvas.addEventListener("mouseup", () => dragging = false);
     canvas.addEventListener("mouseleave", () => dragging = false);
 
+    // Touch events for panning (dragging)
+    canvas.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) {
+        dragging = true;
+        dragStart = getEventPosition(e);
+      }
+    });
+    canvas.addEventListener("touchmove", (e) => {
+      if (dragging && e.touches.length === 1) {
+        const pos = getEventPosition(e);
+        offsetX += pos.x - dragStart.x;
+        offsetY += pos.y - dragStart.y;
+        dragStart = pos;
+        drawGrid();
+        e.preventDefault();
+      }
+    }, { passive: false });
+    canvas.addEventListener("touchend", () => dragging = false);
+    canvas.addEventListener("touchcancel", () => dragging = false);
+
+    // Helper to find closest grid point to user's click/touch
+    function closestGridPoint(screenX, screenY) {
+      const iso = screenToIso(screenX, screenY);
+      // Snap to nearest grid point
+      return { x: iso.x, y: iso.y };
+    }
+
     canvas.addEventListener("click", (e) => {
       if (dragging) return;
-      const pt = screenToIso(e.clientX, e.clientY);
+      const pt = closestGridPoint(e.clientX, e.clientY);
 
       if (!selectedPoint) {
         selectedPoint = pt;
@@ -124,8 +172,26 @@
         selectedPoint = null;
         undoneLines = [];
       }
-
       drawGrid();
+    });
+
+    // Touch event for tap to create/select points
+    canvas.addEventListener("touchend", (e) => {
+      // Only single taps, not dragging
+      if (dragging) return;
+      if (e.changedTouches.length === 1) {
+        const touch = e.changedTouches[0];
+        const pt = closestGridPoint(touch.clientX, touch.clientY);
+
+        if (!selectedPoint) {
+          selectedPoint = pt;
+        } else {
+          lines.push([selectedPoint, pt]);
+          selectedPoint = null;
+          undoneLines = [];
+        }
+        drawGrid();
+      }
     });
 
     function saveLines() {
