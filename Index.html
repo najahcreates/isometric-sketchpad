@@ -1,240 +1,781 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-zinc-900 text-white">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Isometric Sketchpad | NajahCreates</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sketchpad | NajahCreates</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; overflow: hidden; touch-action: none; color: #e5e5e5; }
+    canvas { display: block; cursor: crosshair; }
+    canvas.pan-mode { cursor: grab; }
+    canvas.panning { cursor: grabbing; }
+    canvas.eraser-mode { cursor: pointer; }
+
+    .panel {
+      background: rgba(23,23,23,0.92);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* Settings panel */
+    #settingsPanel {
+      position: fixed;
+      top: 52px;
+      right: 12px;
+      width: 220px;
+      padding: 16px;
+      z-index: 30;
+      display: none;
+    }
+    #settingsPanel.open { display: block; }
+
+    #settingsPanel label {
+      display: block;
+      font-size: 11px;
+      color: #737373;
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    #settingsPanel .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    #settingsPanel .row:last-child { margin-bottom: 0; }
+
+    .toggle { position: relative; width: 34px; height: 18px; cursor: pointer; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle .track {
+      position: absolute; inset: 0; background: #333; border-radius: 9px; transition: 0.2s;
+    }
+    .toggle .track::after {
+      content: ''; position: absolute; width: 14px; height: 14px;
+      left: 2px; top: 2px; background: #888; border-radius: 50%; transition: 0.2s;
+    }
+    .toggle input:checked + .track { background: #d97706; }
+    .toggle input:checked + .track::after { transform: translateX(16px); background: #fff; }
+
+    /* Top bar */
+    #topBar {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+    }
+    .tb {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; border: none;
+      background: transparent; color: #737373;
+      font-size: 13px; cursor: pointer;
+      transition: color 0.12s, background 0.12s;
+    }
+    .tb:hover { color: #e5e5e5; background: rgba(255,255,255,0.06); }
+    .tb.on { color: #f59e0b; background: rgba(245,158,11,0.1); }
+
+    /* Right side tools */
+    #rightTools {
+      position: fixed;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 4px;
+    }
+
+    /* Bottom-right color/width */
+    #bottomRight {
+      position: fixed;
+      bottom: 48px;
+      right: 12px;
+      z-index: 25;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Width slider (vertical) */
+    .v-slider-wrap {
+      width: 28px;
+      height: 80px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .v-slider-wrap input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 60px;
+      height: 3px;
+      background: #333;
+      border-radius: 2px;
+      outline: none;
+      transform: rotate(-90deg);
+    }
+    .v-slider-wrap input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #e5e5e5;
+      cursor: pointer;
+      border: 2px solid #0a0a0a;
+    }
+    .v-slider-wrap input[type="range"]::-moz-range-thumb {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #e5e5e5;
+      cursor: pointer;
+      border: 2px solid #0a0a0a;
+    }
+    .v-label {
+      font-size: 9px;
+      color: #525252;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Color grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+    .csw {
+      width: 20px; height: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.12s, transform 0.12s;
+    }
+    .csw:hover { transform: scale(1.12); }
+    .csw.on { border-color: #fff; }
+    .csw-custom {
+      width: 20px; height: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px dashed #404040;
+      background: transparent;
+      padding: 0;
+      overflow: hidden;
+    }
+    .csw-custom input {
+      width: 28px; height: 28px;
+      border: none; padding: 0;
+      cursor: pointer;
+      transform: translate(-4px, -4px);
+    }
+
+    /* Coords */
+    #coords {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      z-index: 20;
+      font-size: 10px;
+      color: #404040;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #a3a3a3;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 50;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Footer */
+    #footer {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 11px;
+      color: #404040;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #footer a {
+      color: #737373;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    #footer a:hover { color: #a3a3a3; }
+
+    /* Help modal */
+    #helpOverlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #helpOverlay.open { display: flex; }
+    #helpBox {
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 380px;
+      width: 90%;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+    #helpBox h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #d4d4d4; }
+    #helpBox h3 { font-size: 12px; font-weight: 600; color: #a3a3a3; margin: 12px 0 4px; }
+    #helpBox p, #helpBox li { font-size: 11.5px; color: #737373; line-height: 1.65; }
+    #helpBox ul { padding-left: 16px; }
+    #helpBox kbd {
+      display: inline-block; padding: 0 5px;
+      background: #222; border: 1px solid #333;
+      border-radius: 3px; font-size: 10px; color: #a3a3a3;
+      font-family: 'Inter', sans-serif;
+    }
+    #helpBox .close-btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 7px;
+      border: none;
+      border-radius: 8px;
+      background: #262626;
+      color: #a3a3a3;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    #helpBox .close-btn:hover { background: #333; color: #e5e5e5; }
+
+    @media (max-width: 640px) {
+      #settingsPanel { width: 190px; right: 8px; top: 48px; padding: 12px; }
+      #bottomRight { bottom: 42px; right: 8px; padding: 8px; }
+      .v-slider-wrap { height: 60px; }
+      .csw { width: 17px; height: 17px; }
+      #rightTools { right: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
 </head>
-<body class="m-0 overflow-hidden">
-  <div id="controls" class="absolute top-4 left-4 z-10 bg-zinc-800/80 text-white px-4 py-3 rounded-xl shadow-lg flex flex-wrap gap-2 items-center max-w-full">
-    <input id="filename" value="sketchpad" placeholder="filename" class="px-3 py-1 text-sm bg-zinc-700 text-white border-none rounded-md outline-none w-[120px]" />
-    <button onclick="saveLines()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-3 py-1 rounded">💾 Save</button>
-    <button onclick="undo()" class="bg-zinc-700 hover:bg-zinc-600 text-white text-sm px-3 py-1 rounded">↩️ Undo</button>
-    <button onclick="redo()" class="bg-zinc-700 hover:bg-zinc-600 text-white text-sm px-3 py-1 rounded">🔁 Redo</button>
-    <input id="fileLoader" type="file" accept=".isk" class="text-sm text-white bg-zinc-700 rounded cursor-pointer file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-zinc-600"/>
+<body>
+
+  <!-- Top bar -->
+  <div id="topBar" class="panel">
+    <button class="tb on" data-tool="draw" title="Draw"><i class="fa-solid fa-pen"></i></button>
+    <button class="tb" data-tool="pan" title="Pan"><i class="fa-solid fa-hand"></i></button>
+    <button class="tb" data-tool="eraser" title="Eraser"><i class="fa-solid fa-eraser"></i></button>
   </div>
 
-  <canvas id="canvas" class="block w-full h-full"></canvas>
-
-  <!-- Made with ❤️ NajahCreates -->
-  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-zinc-400 text-sm bg-zinc-800/80 px-4 py-2 rounded-xl shadow-lg flex items-center">
-    Made with <span class="mx-1 text-red-500">❤️</span> NajahCreates
+  <!-- Right side: settings gear -->
+  <div id="rightTools" class="panel">
+    <button class="tb" id="gearBtn" title="Settings"><i class="fa-solid fa-sliders"></i></button>
+    <button class="tb" id="undoBtn" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+    <button class="tb" id="redoBtn" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+    <button class="tb" id="clearBtn" title="Clear"><i class="fa-solid fa-trash-can"></i></button>
+    <button class="tb" id="saveBtn" title="Save"><i class="fa-solid fa-arrow-down"></i></button>
+    <button class="tb" id="loadBtn" title="Load"><i class="fa-solid fa-arrow-up"></i></button>
+    <input type="file" id="fileInput" accept=".isk" style="display:none" />
+    <button class="tb" id="helpBtn" title="Help"><i class="fa-solid fa-question"></i></button>
   </div>
+
+  <!-- Settings panel (opens from gear) -->
+  <div id="settingsPanel" class="panel">
+    <div class="row">
+      <label>Filename</label>
+      <input id="filename" value="sketch" style="width:90px;padding:4px 8px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;color:#d4d4d4;font-size:12px;font-family:'Inter',sans-serif;outline:none;" />
+    </div>
+    <div class="row">
+      <label>Show Grid</label>
+      <label class="toggle"><input type="checkbox" id="gridToggle" checked><span class="track"></span></label>
+    </div>
+    <div class="row">
+      <label>Snap to Grid</label>
+      <label class="toggle"><input type="checkbox" id="snapToggle" checked><span class="track"></span></label>
+    </div>
+  </div>
+
+  <!-- Bottom-right: width + color -->
+  <div id="bottomRight" class="panel">
+    <div class="v-label" id="widthLabel">2px</div>
+    <div class="v-slider-wrap">
+      <input type="range" id="widthSlider" min="1" max="8" value="2" step="0.5" />
+    </div>
+    <div style="width:1px;height:1px;"></div>
+    <div class="color-grid">
+      <div class="csw on" data-c="#e5e5e5" style="background:#e5e5e5"></div>
+      <div class="csw" data-c="#22d3ee" style="background:#22d3ee"></div>
+      <div class="csw" data-c="#f59e0b" style="background:#f59e0b"></div>
+      <div class="csw" data-c="#a78bfa" style="background:#a78bfa"></div>
+      <div class="csw" data-c="#34d399" style="background:#34d399"></div>
+      <div class="csw" data-c="#fb7185" style="background:#fb7185"></div>
+      <div class="csw" data-c="#60a5fa" style="background:#60a5fa"></div>
+      <div class="csw-custom" title="Custom"><input type="color" id="customColor" value="#e5e5e5" /></div>
+    </div>
+  </div>
+
+  <!-- Coords -->
+  <div id="coords">0, 0</div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Footer -->
+  <div id="footer">
+    Made with <span style="color:#ef4444;">&#9829;</span> by <a href="https://mohamednajah.vercel.app" target="_blank" rel="noopener">Najah</a>
+  </div>
+
+  <!-- Help modal -->
+  <div id="helpOverlay">
+    <div id="helpBox">
+      <h2>Shortcuts</h2>
+      <h3>Drawing</h3>
+      <ul>
+        <li>Click to place points, chain lines together</li>
+        <li>Double-click or <kbd>Esc</kbd> to stop chain</li>
+        <li><kbd>D</kbd> Draw &nbsp; <kbd>E</kbd> Eraser &nbsp; <kbd>Space</kbd> Pan</li>
+      </ul>
+      <h3>Navigation</h3>
+      <ul>
+        <li><kbd>Space</kbd> + drag to pan</li>
+        <li>Scroll to zoom, <kbd>+</kbd> <kbd>-</kbd> keys</li>
+        <li>Pinch to zoom on touch</li>
+      </ul>
+      <h3>Other</h3>
+      <ul>
+        <li><kbd>G</kbd> Grid &nbsp; <kbd>S</kbd> Snap</li>
+        <li><kbd>Ctrl+Z</kbd> Undo &nbsp; <kbd>Ctrl+Y</kbd> Redo</li>
+        <li><kbd>Ctrl+S</kbd> Save</li>
+      </ul>
+      <button class="close-btn" onclick="document.getElementById('helpOverlay').classList.remove('open')">Close</button>
+    </div>
+  </div>
+
+  <canvas id="canvas"></canvas>
 
   <script>
-    const dx = 40;
-    const dy = dx / 2;
+    // ── State ──
+    let ox = 0, oy = 0, zoom = 1;
+    let lines = [], undone = [];
+    let tool = 'draw';
+    let color = '#e5e5e5', width = 2;
+    let showGrid = true, snap = true;
+    let selPt = null;
+    let mScreen = {x:0,y:0}, mIso = {x:0,y:0};
+    let isPan = false, panSX=0, panSY=0, panOX=0, panOY=0, dragged=false;
+    let mdTime=0, mdPos={x:0,y:0};
+    let spaceHeld = false;
+    let eraserIdx = null;
+    const DX = 40;
 
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const coordsEl = document.getElementById('coords');
+    const toastEl = document.getElementById('toast');
 
-    let offsetX = canvas.width / 2;
-    let offsetY = canvas.height / 2;
-    let dragging = false;
-    let dragStart = { x: 0, y: 0 };
-    let lines = [];
-    let undoneLines = [];
-    let selectedPoint = null;
+    // ── Resize ──
+    function resize() {
+      const dpr = devicePixelRatio || 1;
+      canvas.width = innerWidth * dpr;
+      canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      if (!ox && !oy) { ox = innerWidth/2; oy = innerHeight/2; }
+    }
+    addEventListener('resize', resize);
+    resize();
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      offsetX = canvas.width / 2;
-      offsetY = canvas.height / 2;
-      drawGrid();
+    // ── Transforms ──
+    function i2s(x,y) {
+      const d = DX*zoom, h = d/2;
+      return { x: (x-y)*d+ox, y: (x+y)*h+oy };
+    }
+    function s2i(sx,sy) {
+      const d = DX*zoom, h = d/2;
+      let x = ((sx-ox)/d + (sy-oy)/h)/2;
+      let y = ((sy-oy)/h - (sx-ox)/d)/2;
+      if (snap) { x=Math.round(x); y=Math.round(y); }
+      return {x,y};
+    }
+    function snapPt(sx,sy) {
+      const d = DX*zoom, h = d/2;
+      let x = ((sx-ox)/d + (sy-oy)/h)/2;
+      let y = ((sy-oy)/h - (sx-ox)/d)/2;
+      return {x:Math.round(x), y:Math.round(y)};
     }
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    // ── Draw ──
+    function draw() {
+      const w = innerWidth, h = innerHeight;
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0,0,w,h);
 
-    function isoToScreen(x, y) {
-      return {
-        x: (x - y) * dx + offsetX,
-        y: (x + y) * dy + offsetY
-      };
+      if (showGrid) drawGrid(w,h);
+      drawLines();
+      if (tool==='draw' && selPt) drawPreview();
+      if (tool==='eraser' && eraserIdx!==null) drawEraserHL();
+      if (snap && tool==='draw') drawSnap();
+      else if (tool==='draw' && !selPt) drawCursor();
     }
 
-    function screenToIso(sx, sy) {
-      sx -= offsetX;
-      sy -= offsetY;
-      let x = (sx / dx + sy / dy) / 2;
-      let y = (sy / dy - sx / dx) / 2;
-      return { x: Math.round(x), y: Math.round(y) };
+    function drawGrid(w,h) {
+      const tl = s2i(0,0), br = s2i(w,h);
+      const mi = Math.floor(Math.min(tl.x,br.x))-2, mx = Math.ceil(Math.max(tl.x,br.x))+2;
+      const mj = Math.floor(Math.min(tl.y,br.y))-2, my = Math.ceil(Math.max(tl.y,br.y))+2;
+
+      // Subtle grid lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+      ctx.lineWidth = 0.5;
+      for (let j=mj;j<=my;j++) {
+        const a=i2s(mi,j), b=i2s(mx,j);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+      for (let i=mi;i<=mx;i++) {
+        const a=i2s(i,mj), b=i2s(i,my);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+
+      // Dots
+      ctx.fillStyle = 'rgba(255,255,255,0.09)';
+      const r = Math.max(0.8, 1.2*zoom);
+      for (let i=mi;i<=mx;i++) for (let j=mj;j<=my;j++) {
+        const p=i2s(i,j);
+        if (p.x<-10||p.x>w+10||p.y<-10||p.y>h+10) continue;
+        ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.fill();
+      }
+
+      // Origin
+      const o=i2s(0,0);
+      ctx.fillStyle='rgba(245,158,11,0.2)';
+      ctx.beginPath(); ctx.arc(o.x,o.y,Math.max(1.5,2.5*zoom),0,Math.PI*2); ctx.fill();
     }
 
-    function drawGrid() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "#333";
-      ctx.lineWidth = 1;
+    function drawLines() {
+      ctx.lineCap = 'round';
+      for (const l of lines) {
+        const a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=l.c; ctx.lineWidth=l.w*zoom; ctx.stroke();
+      }
+    }
 
-      const range = 60;
-      for (let i = -range; i < range; i++) {
-        for (let j = -range; j < range; j++) {
-          const { x, y } = isoToScreen(i, j);
-          ctx.beginPath();
-          ctx.arc(x, y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = "#666";
-          ctx.fill();
+    function drawPreview() {
+      const a=i2s(selPt.x,selPt.y);
+      const t = snap ? snapPt(mScreen.x,mScreen.y) : mIso;
+      const b=i2s(t.x,t.y);
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle=color; ctx.lineWidth=width*zoom; ctx.lineCap='round';
+      ctx.globalAlpha=0.35; ctx.setLineDash([5*zoom,4*zoom]);
+      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+    }
+
+    function drawEraserHL() {
+      const l=lines[eraserIdx];
+      const a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle='#ef4444'; ctx.lineWidth=(l.w+3)*zoom; ctx.lineCap='round';
+      ctx.globalAlpha=0.5; ctx.stroke(); ctx.globalAlpha=1;
+    }
+
+    function drawSnap() {
+      const sp=snapPt(mScreen.x,mScreen.y), sc=i2s(sp.x,sp.y);
+      const t=Date.now()/600, p=0.5+0.5*Math.sin(t);
+      const r=(4+p*2.5)*zoom;
+      ctx.beginPath(); ctx.arc(sc.x,sc.y,r,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(245,158,11,${0.25+p*0.25})`; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(sc.x,sc.y,Math.max(1,1.8*zoom),0,Math.PI*2);
+      ctx.fillStyle='#f59e0b'; ctx.fill();
+    }
+
+    function drawCursor() {
+      const sp=snapPt(mScreen.x,mScreen.y), sc=i2s(sp.x,sp.y);
+      ctx.beginPath(); ctx.arc(sc.x,sc.y,3*zoom,0,Math.PI*2);
+      ctx.fillStyle='rgba(245,158,11,0.3)'; ctx.fill();
+    }
+
+    // ── Hit test ──
+    function ptSegDist(px,py,x1,y1,x2,y2) {
+      const dx=x2-x1,dy=y2-y1,lsq=dx*dx+dy*dy;
+      if (!lsq) return Math.hypot(px-x1,py-y1);
+      let t=((px-x1)*dx+(py-y1)*dy)/lsq;
+      t=Math.max(0,Math.min(1,t));
+      return Math.hypot(px-(x1+t*dx),py-(y1+t*dy));
+    }
+    function findLine(sx,sy) {
+      const th=10*zoom;
+      for (let i=lines.length-1;i>=0;i--) {
+        const l=lines[i], a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
+        if (ptSegDist(sx,sy,a.x,a.y,b.x,b.y)<th) return i;
+      }
+      return null;
+    }
+
+    // ── Events ──
+    function gp(e) {
+      if (e.touches&&e.touches.length) return {x:e.touches[0].clientX,y:e.touches[0].clientY};
+      if (e.changedTouches&&e.changedTouches.length) return {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};
+      return {x:e.clientX,y:e.clientY};
+    }
+
+    function startPan(e) {
+      isPan=true; const p=gp(e);
+      panSX=p.x; panSY=p.y; panOX=ox; panOY=oy; dragged=false; updCursor();
+    }
+    function endPan() { isPan=false; updCursor(); }
+
+    function updCursor() {
+      canvas.className='';
+      if (tool==='pan'||spaceHeld) canvas.classList.add(isPan?'panning':'pan-mode');
+      else if (tool==='eraser') canvas.classList.add('eraser-mode');
+    }
+
+    function updCoords(sx,sy) {
+      const i=s2i(sx,sy);
+      coordsEl.textContent=`${Math.round(i.x)}, ${Math.round(i.y)}  ${Math.round(zoom*100)}%`;
+    }
+
+    function handleClick(sx,sy) {
+      if (tool==='draw') {
+        const pt = snap ? snapPt(sx,sy) : s2i(sx,sy);
+        if (!selPt) { selPt=pt; }
+        else {
+          if (selPt.x!==pt.x||selPt.y!==pt.y) {
+            lines.push({x1:selPt.x,y1:selPt.y,x2:pt.x,y2:pt.y,c:color,w:width});
+            undone=[];
+          }
+          selPt=pt;
         }
+      } else if (tool==='eraser') {
+        const idx=findLine(sx,sy);
+        if (idx!==null) { undone.push(lines.splice(idx,1)[0]); eraserIdx=null; }
       }
+    }
 
-      // Highlight selected point
-      if (selectedPoint) {
-        const pt = isoToScreen(selectedPoint.x, selectedPoint.y);
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 6, 0, Math.PI * 2);
-        ctx.fillStyle = "#facc15"; // yellow-400
-        ctx.fill();
+    // Mouse
+    canvas.addEventListener('mousedown', e => {
+      if (e.button===1) { e.preventDefault(); startPan(e); return; }
+      if (e.button!==0) return;
+      mdTime=Date.now(); mdPos=gp(e); dragged=false;
+      if (tool==='pan'||spaceHeld) startPan(e);
+    });
+    canvas.addEventListener('mousemove', e => {
+      const p=gp(e); mScreen=p; mIso=s2i(p.x,p.y); updCoords(p.x,p.y);
+      if (isPan) {
+        const dx=p.x-panSX, dy=p.y-panSY;
+        if (Math.abs(dx)>3||Math.abs(dy)>3) dragged=true;
+        ox=panOX+dx; oy=panOY+dy; return;
       }
+      eraserIdx = tool==='eraser' ? findLine(p.x,p.y) : null;
+    });
+    canvas.addEventListener('mouseup', e => {
+      if (e.button!==0) return;
+      if (isPan) { endPan(); return; }
+      const p=gp(e), dt=Date.now()-mdTime, d=Math.hypot(p.x-mdPos.x,p.y-mdPos.y);
+      if (dt<300 && d<6) handleClick(p.x,p.y);
+    });
+    canvas.addEventListener('dblclick', () => { if (tool==='draw') { selPt=null; } });
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      const p=gp(e), d=e.deltaY>0?-0.07:0.07;
+      const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+d));
+      ox=p.x-(p.x-ox)*(zoom/oz); oy=p.y-(p.y-oy)*(zoom/oz);
+    }, {passive:false});
 
-      // Draw lines
-      ctx.strokeStyle = "#22d3ee"; // cyan-400
-      ctx.lineWidth = 2;
-      lines.forEach(([p1, p2]) => {
-        const s1 = isoToScreen(p1.x, p1.y);
-        const s2 = isoToScreen(p2.x, p2.y);
-        ctx.beginPath();
-        ctx.moveTo(s1.x, s1.y);
-        ctx.lineTo(s2.x, s2.y);
-        ctx.stroke();
+    // Touch
+    let tDist=0, tCenter={x:0,y:0}, tMode=null;
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      if (e.touches.length===2) {
+        tMode='pinch'; isPan=false;
+        const a=e.touches[0],b=e.touches[1];
+        tDist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+        tCenter={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};
+        return;
+      }
+      if (e.touches.length===1) {
+        tMode='single'; const p=gp(e); mdTime=Date.now(); mdPos={...p}; dragged=false; mScreen=p;
+        if (tool==='pan') startPan(e);
+      }
+    },{passive:false});
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (e.touches.length===2&&tMode==='pinch') {
+        const a=e.touches[0],b=e.touches[1];
+        const d=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+        const c={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};
+        const s=d/Math.max(1,tDist), delta=(s-1)*0.5;
+        const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+delta));
+        ox=c.x-(c.x-ox)*(zoom/oz); oy=c.y-(c.y-oy)*(zoom/oz);
+        ox+=c.x-tCenter.x; oy+=c.y-tCenter.y;
+        tDist=d; tCenter=c; return;
+      }
+      if (e.touches.length===1&&tMode==='single') {
+        const p=gp(e); mScreen=p; mIso=s2i(p.x,p.y); updCoords(p.x,p.y);
+        if (isPan) {
+          const dx=p.x-panSX,dy=p.y-panSY;
+          if (Math.abs(dx)>5||Math.abs(dy)>5) dragged=true;
+          ox=panOX+dx; oy=panOY+dy;
+        }
+        eraserIdx=tool==='eraser'?findLine(p.x,p.y):null;
+      }
+    },{passive:false});
+    canvas.addEventListener('touchend', e => {
+      e.preventDefault();
+      if (tMode==='pinch'&&e.touches.length<2) {
+        tMode=null;
+        if (e.touches.length===1) { const p=gp(e); mdTime=Date.now(); mdPos={...p}; dragged=false; mScreen=p; if(tool==='pan')startPan(e); }
+        return;
+      }
+      if (tMode==='single') {
+        if (isPan) endPan();
+        else if (Date.now()-mdTime<300&&!dragged) handleClick(mdPos.x,mdPos.y);
+        tMode=null;
+      }
+    },{passive:false});
+
+    // Keyboard
+    addEventListener('keydown', e => {
+      if (e.target.tagName==='INPUT') return;
+      if (e.key===' '&&!spaceHeld) { e.preventDefault(); spaceHeld=true; updCursor(); }
+      if (e.key==='d'||e.key==='D') setTool('draw');
+      if (e.key==='e'||e.key==='E') setTool('eraser');
+      if (e.key==='g'||e.key==='G') { showGrid=!showGrid; document.getElementById('gridToggle').checked=showGrid; }
+      if (e.key==='s'&&!e.ctrlKey&&!e.metaKey) { snap=!snap; document.getElementById('snapToggle').checked=snap; }
+      if (e.key==='Escape') { selPt=null; document.getElementById('helpOverlay').classList.remove('open'); document.getElementById('settingsPanel').classList.remove('open'); }
+      if ((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&!e.shiftKey) { e.preventDefault(); undo(); }
+      if ((e.key==='y'||e.key==='Y')&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); redo(); }
+      if ((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&e.shiftKey) { e.preventDefault(); redo(); }
+      if (e.key==='='||e.key==='+') { e.preventDefault(); zoomAt(innerWidth/2,innerHeight/2,0.12); }
+      if (e.key==='-') { e.preventDefault(); zoomAt(innerWidth/2,innerHeight/2,-0.12); }
+      if ((e.key==='s'||e.key==='S')&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); saveLines(); }
+    });
+    addEventListener('keyup', e => {
+      if (e.key===' ') { spaceHeld=false; if(isPan)endPan(); updCursor(); }
+    });
+
+    function zoomAt(sx,sy,d) {
+      const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+d));
+      ox=sx-(sx-ox)*(zoom/oz); oy=sy-(sy-oy)*(zoom/oz);
+    }
+
+    // ── Tool selection ──
+    function setTool(t) {
+      tool=t; selPt=null; eraserIdx=null;
+      document.querySelectorAll('#topBar .tb').forEach(b => b.classList.toggle('on', b.dataset.tool===t));
+      updCursor();
+    }
+    document.querySelectorAll('#topBar .tb').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
+
+    // ── Color ──
+    document.querySelectorAll('.csw').forEach(s => {
+      s.addEventListener('click', () => {
+        color=s.dataset.c;
+        document.querySelectorAll('.csw').forEach(x=>x.classList.remove('on'));
+        s.classList.add('on');
+        document.getElementById('customColor').value=color;
       });
-    }
-
-    function getEventPosition(e) {
-      // Support both touch and mouse events
-      if (e.touches && e.touches.length > 0) {
-        return {
-          x: e.touches[0].clientX,
-          y: e.touches[0].clientY
-        };
-      } else {
-        return {
-          x: e.clientX,
-          y: e.clientY
-        };
-      }
-    }
-
-    canvas.addEventListener("mousedown", (e) => {
-      dragging = true;
-      dragStart = getEventPosition(e);
+    });
+    document.getElementById('customColor').addEventListener('input', e => {
+      color=e.target.value;
+      document.querySelectorAll('.csw').forEach(x=>x.classList.remove('on'));
     });
 
-    canvas.addEventListener("mousemove", (e) => {
-      if (dragging) {
-        const pos = getEventPosition(e);
-        offsetX += pos.x - dragStart.x;
-        offsetY += pos.y - dragStart.y;
-        dragStart = pos;
-        drawGrid();
-      }
+    // ── Width ──
+    const wSlider = document.getElementById('widthSlider');
+    const wLabel = document.getElementById('widthLabel');
+    wSlider.addEventListener('input', () => { width=parseFloat(wSlider.value); wLabel.textContent=width+'px'; });
+
+    // ── Toggles ──
+    document.getElementById('gridToggle').addEventListener('change', e => showGrid=e.target.checked);
+    document.getElementById('snapToggle').addEventListener('change', e => snap=e.target.checked);
+
+    // ── Gear / Settings panel ──
+    document.getElementById('gearBtn').addEventListener('click', () => {
+      document.getElementById('settingsPanel').classList.toggle('open');
     });
 
-    canvas.addEventListener("mouseup", () => dragging = false);
-    canvas.addEventListener("mouseleave", () => dragging = false);
+    // ── Actions ──
+    function undo() { if(lines.length) { undone.push(lines.pop()); toast('Undo'); } }
+    function redo() { if(undone.length) { lines.push(undone.pop()); toast('Redo'); } }
+    function clearAll() { if(!lines.length)return; undone.push(...lines.reverse()); lines=[]; selPt=null; toast('Cleared'); }
 
-    // Touch events for panning (dragging)
-    canvas.addEventListener("touchstart", (e) => {
-      if (e.touches.length === 1) {
-        dragging = true;
-        dragStart = getEventPosition(e);
-      }
-    });
-    canvas.addEventListener("touchmove", (e) => {
-      if (dragging && e.touches.length === 1) {
-        const pos = getEventPosition(e);
-        offsetX += pos.x - dragStart.x;
-        offsetY += pos.y - dragStart.y;
-        dragStart = pos;
-        drawGrid();
-        e.preventDefault();
-      }
-    }, { passive: false });
-    canvas.addEventListener("touchend", () => dragging = false);
-    canvas.addEventListener("touchcancel", () => dragging = false);
-
-    // Helper to find closest grid point to user's click/touch
-    function closestGridPoint(screenX, screenY) {
-      const iso = screenToIso(screenX, screenY);
-      // Snap to nearest grid point
-      return { x: iso.x, y: iso.y };
-    }
-
-    canvas.addEventListener("click", (e) => {
-      if (dragging) return;
-      const pt = closestGridPoint(e.clientX, e.clientY);
-
-      if (!selectedPoint) {
-        selectedPoint = pt;
-      } else {
-        lines.push([selectedPoint, pt]);
-        selectedPoint = null;
-        undoneLines = [];
-      }
-      drawGrid();
-    });
-
-    // Touch event for tap to create/select points
-    canvas.addEventListener("touchend", (e) => {
-      // Only single taps, not dragging
-      if (dragging) return;
-      if (e.changedTouches.length === 1) {
-        const touch = e.changedTouches[0];
-        const pt = closestGridPoint(touch.clientX, touch.clientY);
-
-        if (!selectedPoint) {
-          selectedPoint = pt;
-        } else {
-          lines.push([selectedPoint, pt]);
-          selectedPoint = null;
-          undoneLines = [];
-        }
-        drawGrid();
-      }
-    });
+    document.getElementById('undoBtn').addEventListener('click', undo);
+    document.getElementById('redoBtn').addEventListener('click', redo);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    document.getElementById('saveBtn').addEventListener('click', saveLines);
+    document.getElementById('loadBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpOverlay').classList.toggle('open'));
 
     function saveLines() {
-      const filename = document.getElementById("filename").value || "untitled";
-      const blob = new Blob([JSON.stringify(lines)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename + ".isk";
-      a.click();
+      const fn=document.getElementById('filename').value||'untitled';
+      const blob=new Blob([JSON.stringify({v:2,lines})],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download=fn+'.isk'; a.click();
+      URL.revokeObjectURL(a.href); toast('Saved');
     }
-
-    document.getElementById("fileLoader").addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (evt) {
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const f=e.target.files[0]; if(!f)return;
+      const r=new FileReader();
+      r.onload=evt => {
         try {
-          lines = JSON.parse(evt.target.result);
-          undoneLines = [];
-          selectedPoint = null;
-          drawGrid();
-        } catch {
-          alert("Invalid .isk file");
-        }
+          const d=JSON.parse(evt.target.result);
+          lines=Array.isArray(d)?d:d.lines||[];
+          undone=[]; selPt=null; toast('Loaded '+lines.length+' lines');
+        } catch { toast('Invalid file'); }
       };
-      reader.readAsText(file);
+      r.readAsText(f); this.value='';
     });
 
-    function undo() {
-      if (lines.length > 0) {
-        undoneLines.push(lines.pop());
-        drawGrid();
-      }
-    }
+    // ── Toast ──
+    let tTO;
+    function toast(m) { toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(tTO); tTO=setTimeout(()=>toastEl.classList.remove('show'),1400); }
 
-    function redo() {
-      if (undoneLines.length > 0) {
-        lines.push(undoneLines.pop());
-        drawGrid();
-      }
-    }
+    // ── Close settings on outside click ──
+    addEventListener('mousedown', e => {
+      const sp=document.getElementById('settingsPanel');
+      const gb=document.getElementById('gearBtn');
+      if (sp.classList.contains('open') && !sp.contains(e.target) && !gb.contains(e.target)) sp.classList.remove('open');
+    });
 
-    drawGrid();
+    // ── Loop ──
+    (function loop() { draw(); requestAnimationFrame(loop); })();
   </script>
 </body>
 </html>
