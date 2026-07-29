@@ -25,258 +25,104 @@
       -webkit-backdrop-filter: blur(16px);
     }
 
-    /* Settings panel */
     #settingsPanel {
-      position: fixed;
-      top: 52px;
-      right: 12px;
-      width: 220px;
-      padding: 16px;
-      z-index: 30;
-      display: none;
+      position: fixed; top: 52px; right: 12px;
+      width: 220px; padding: 16px; z-index: 30; display: none;
     }
     #settingsPanel.open { display: block; }
-
-    #settingsPanel label {
-      display: block;
-      font-size: 11px;
-      color: #737373;
-      margin-bottom: 6px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-    #settingsPanel .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
+    #settingsPanel label { display: block; font-size: 11px; color: #737373; margin-bottom: 6px; font-weight: 500; }
+    #settingsPanel .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     #settingsPanel .row:last-child { margin-bottom: 0; }
 
     .toggle { position: relative; width: 34px; height: 18px; cursor: pointer; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
-    .toggle .track {
-      position: absolute; inset: 0; background: #333; border-radius: 9px; transition: 0.2s;
-    }
-    .toggle .track::after {
-      content: ''; position: absolute; width: 14px; height: 14px;
-      left: 2px; top: 2px; background: #888; border-radius: 50%; transition: 0.2s;
-    }
+    .toggle .track { position: absolute; inset: 0; background: #333; border-radius: 9px; transition: 0.2s; }
+    .toggle .track::after { content: ''; position: absolute; width: 14px; height: 14px; left: 2px; top: 2px; background: #888; border-radius: 50%; transition: 0.2s; }
     .toggle input:checked + .track { background: #d97706; }
     .toggle input:checked + .track::after { transform: translateX(16px); background: #fff; }
 
-    /* Top bar */
     #topBar {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 30;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      padding: 4px;
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 30; display: flex; align-items: center; gap: 2px; padding: 4px;
     }
     .tb {
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 8px; border: none;
-      background: transparent; color: #737373;
-      font-size: 13px; cursor: pointer;
-      transition: color 0.12s, background 0.12s;
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; border: none; background: transparent; color: #737373;
+      font-size: 13px; cursor: pointer; transition: color 0.12s, background 0.12s;
     }
     .tb:hover { color: #e5e5e5; background: rgba(255,255,255,0.06); }
     .tb.on { color: #f59e0b; background: rgba(245,158,11,0.1); }
 
-    /* Right side tools */
     #rightTools {
-      position: fixed;
-      top: 50%;
-      right: 12px;
-      transform: translateY(-50%);
-      z-index: 25;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 4px;
+      position: fixed; top: 50%; right: 12px; transform: translateY(-50%);
+      z-index: 25; display: flex; flex-direction: column; gap: 2px; padding: 4px;
     }
 
-    /* Bottom-right color/width */
     #bottomRight {
-      position: fixed;
-      bottom: 48px;
-      right: 12px;
-      z-index: 25;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      position: fixed; bottom: 48px; right: 12px; z-index: 25;
+      padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px;
     }
 
-    /* Width slider (vertical) */
-    .v-slider-wrap {
-      width: 28px;
-      height: 80px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .v-slider-wrap { width: 28px; height: 80px; position: relative; display: flex; align-items: center; justify-content: center; }
     .v-slider-wrap input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 60px;
-      height: 3px;
-      background: #333;
-      border-radius: 2px;
-      outline: none;
-      transform: rotate(-90deg);
+      -webkit-appearance: none; appearance: none;
+      width: 60px; height: 3px; background: #333; border-radius: 2px; outline: none; transform: rotate(-90deg);
     }
     .v-slider-wrap input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: #e5e5e5;
-      cursor: pointer;
-      border: 2px solid #0a0a0a;
+      -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #e5e5e5; cursor: pointer; border: 2px solid #0a0a0a;
     }
     .v-slider-wrap input[type="range"]::-moz-range-thumb {
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: #e5e5e5;
-      cursor: pointer;
-      border: 2px solid #0a0a0a;
+      width: 12px; height: 12px; border-radius: 50%; background: #e5e5e5; cursor: pointer; border: 2px solid #0a0a0a;
     }
-    .v-label {
-      font-size: 9px;
-      color: #525252;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-    }
+    .v-label { font-size: 9px; color: #525252; text-align: center; font-variant-numeric: tabular-nums; }
 
-    /* Color grid */
-    .color-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-    }
+    .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
     .csw {
-      width: 20px; height: 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border-color 0.12s, transform 0.12s;
+      width: 20px; height: 20px; border-radius: 5px; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.12s, transform 0.12s;
     }
     .csw:hover { transform: scale(1.12); }
     .csw.on { border-color: #fff; }
     .csw-custom {
-      width: 20px; height: 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      border: 1px dashed #404040;
-      background: transparent;
-      padding: 0;
-      overflow: hidden;
+      width: 20px; height: 20px; border-radius: 5px; cursor: pointer;
+      border: 1px dashed #404040; background: transparent; padding: 0; overflow: hidden;
     }
-    .csw-custom input {
-      width: 28px; height: 28px;
-      border: none; padding: 0;
-      cursor: pointer;
-      transform: translate(-4px, -4px);
-    }
+    .csw-custom input { width: 28px; height: 28px; border: none; padding: 0; cursor: pointer; transform: translate(-4px, -4px); }
 
-    /* Coords */
-    #coords {
-      position: fixed;
-      bottom: 12px;
-      right: 12px;
-      z-index: 20;
-      font-size: 10px;
-      color: #404040;
-      font-variant-numeric: tabular-nums;
-    }
+    #coords { position: fixed; bottom: 12px; right: 12px; z-index: 20; font-size: 10px; color: #404040; font-variant-numeric: tabular-nums; }
 
-    /* Toast */
     #toast {
-      position: fixed;
-      bottom: 52px;
-      left: 50%;
-      transform: translateX(-50%) translateY(8px);
-      background: #1a1a1a;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #a3a3a3;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      pointer-events: none;
-      z-index: 50;
+      position: fixed; bottom: 52px; left: 50%; transform: translateX(-50%) translateY(8px);
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,0.06); color: #a3a3a3;
+      padding: 6px 14px; border-radius: 8px; font-size: 12px;
+      opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 50;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* Footer */
     #footer {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      font-size: 11px;
-      color: #404040;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 20; font-size: 11px; color: #404040; display: flex; align-items: center; gap: 4px;
     }
-    #footer a {
-      color: #737373;
-      text-decoration: none;
-      font-weight: 500;
-    }
+    #footer a { color: #737373; text-decoration: none; font-weight: 500; }
     #footer a:hover { color: #a3a3a3; }
 
-    /* Help modal */
-    #helpOverlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
+    #helpOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; display: none; align-items: center; justify-content: center; }
     #helpOverlay.open { display: flex; }
     #helpBox {
-      background: #161616;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 24px;
-      max-width: 380px;
-      width: 90%;
-      max-height: 75vh;
-      overflow-y: auto;
+      background: #161616; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+      padding: 24px; max-width: 380px; width: 90%; max-height: 75vh; overflow-y: auto;
     }
     #helpBox h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #d4d4d4; }
     #helpBox h3 { font-size: 12px; font-weight: 600; color: #a3a3a3; margin: 12px 0 4px; }
     #helpBox p, #helpBox li { font-size: 11.5px; color: #737373; line-height: 1.65; }
     #helpBox ul { padding-left: 16px; }
     #helpBox kbd {
-      display: inline-block; padding: 0 5px;
-      background: #222; border: 1px solid #333;
-      border-radius: 3px; font-size: 10px; color: #a3a3a3;
-      font-family: 'Inter', sans-serif;
+      display: inline-block; padding: 0 5px; background: #222; border: 1px solid #333;
+      border-radius: 3px; font-size: 10px; color: #a3a3a3; font-family: 'Inter', sans-serif;
     }
     #helpBox .close-btn {
-      margin-top: 16px;
-      width: 100%;
-      padding: 7px;
-      border: none;
-      border-radius: 8px;
-      background: #262626;
-      color: #a3a3a3;
-      font-size: 12px;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
+      margin-top: 16px; width: 100%; padding: 7px; border: none; border-radius: 8px;
+      background: #262626; color: #a3a3a3; font-size: 12px; font-family: 'Inter', sans-serif; cursor: pointer;
     }
     #helpBox .close-btn:hover { background: #333; color: #e5e5e5; }
 
@@ -287,7 +133,6 @@
       .csw { width: 17px; height: 17px; }
       #rightTools { right: 8px; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
@@ -295,14 +140,12 @@
 </head>
 <body>
 
-  <!-- Top bar -->
   <div id="topBar" class="panel">
     <button class="tb on" data-tool="draw" title="Draw"><i class="fa-solid fa-pen"></i></button>
     <button class="tb" data-tool="pan" title="Pan"><i class="fa-solid fa-hand"></i></button>
     <button class="tb" data-tool="eraser" title="Eraser"><i class="fa-solid fa-eraser"></i></button>
   </div>
 
-  <!-- Right side: settings gear -->
   <div id="rightTools" class="panel">
     <button class="tb" id="gearBtn" title="Settings"><i class="fa-solid fa-sliders"></i></button>
     <button class="tb" id="undoBtn" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
@@ -314,7 +157,6 @@
     <button class="tb" id="helpBtn" title="Help"><i class="fa-solid fa-question"></i></button>
   </div>
 
-  <!-- Settings panel (opens from gear) -->
   <div id="settingsPanel" class="panel">
     <div class="row">
       <label>Filename</label>
@@ -330,7 +172,6 @@
     </div>
   </div>
 
-  <!-- Bottom-right: width + color -->
   <div id="bottomRight" class="panel">
     <div class="v-label" id="widthLabel">2px</div>
     <div class="v-slider-wrap">
@@ -349,18 +190,13 @@
     </div>
   </div>
 
-  <!-- Coords -->
   <div id="coords">0, 0</div>
-
-  <!-- Toast -->
   <div id="toast"></div>
 
-  <!-- Footer -->
   <div id="footer">
     Made with <span style="color:#ef4444;">&#9829;</span> by <a href="https://mohamednajah.vercel.app" target="_blank" rel="noopener">Najah</a>
   </div>
 
-  <!-- Help modal -->
   <div id="helpOverlay">
     <div id="helpBox">
       <h2>Shortcuts</h2>
@@ -389,7 +225,6 @@
   <canvas id="canvas"></canvas>
 
   <script>
-    // ── State ──
     let ox = 0, oy = 0, zoom = 1;
     let lines = [], undone = [];
     let tool = 'draw';
@@ -408,7 +243,6 @@
     const coordsEl = document.getElementById('coords');
     const toastEl = document.getElementById('toast');
 
-    // ── Resize ──
     function resize() {
       const dpr = devicePixelRatio || 1;
       canvas.width = innerWidth * dpr;
@@ -416,325 +250,371 @@
       canvas.style.width = innerWidth + 'px';
       canvas.style.height = innerHeight + 'px';
       ctx.setTransform(dpr,0,0,dpr,0,0);
-      if (!ox && !oy) { ox = innerWidth/2; oy = innerHeight/2; }
+      if (!ox && !oy) { ox = innerWidth / 2; oy = innerHeight / 2; }
     }
     addEventListener('resize', resize);
     resize();
 
-    // ── Transforms ──
-    function i2s(x,y) {
-      const d = DX*zoom, h = d/2;
-      return { x: (x-y)*d+ox, y: (x+y)*h+oy };
-    }
-    function s2i(sx,sy) {
-      const d = DX*zoom, h = d/2;
-      let x = ((sx-ox)/d + (sy-oy)/h)/2;
-      let y = ((sy-oy)/h - (sx-ox)/d)/2;
-      if (snap) { x=Math.round(x); y=Math.round(y); }
-      return {x,y};
-    }
-    function snapPt(sx,sy) {
-      const d = DX*zoom, h = d/2;
-      let x = ((sx-ox)/d + (sy-oy)/h)/2;
-      let y = ((sy-oy)/h - (sx-ox)/d)/2;
-      return {x:Math.round(x), y:Math.round(y)};
+    // Fixed isometric transform — no snap involved
+    function i2s(x, y) {
+      const d = DX * zoom, h = d / 2;
+      return { x: (x - y) * d + ox, y: (x + y) * h + oy };
     }
 
-    // ── Draw ──
+    // Pure inverse — always returns exact float coords
+    function s2iExact(sx, sy) {
+      const d = DX * zoom, h = d / 2;
+      return {
+        x: ((sx - ox) / d + (sy - oy) / h) / 2,
+        y: ((sy - oy) / h - (sx - ox) / d) / 2
+      };
+    }
+
+    // Optional snap on top of exact
+    function s2i(sx, sy) {
+      const p = s2iExact(sx, sy);
+      if (snap) { p.x = Math.round(p.x); p.y = Math.round(p.y); }
+      return p;
+    }
+
+    function snapPt(sx, sy) {
+      const p = s2iExact(sx, sy);
+      return { x: Math.round(p.x), y: Math.round(p.y) };
+    }
+
     function draw() {
       const w = innerWidth, h = innerHeight;
-      ctx.clearRect(0,0,w,h);
+      ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0,0,w,h);
-
-      if (showGrid) drawGrid(w,h);
+      ctx.fillRect(0, 0, w, h);
+      if (showGrid) drawGrid(w, h);
       drawLines();
-      if (tool==='draw' && selPt) drawPreview();
-      if (tool==='eraser' && eraserIdx!==null) drawEraserHL();
-      if (snap && tool==='draw') drawSnap();
-      else if (tool==='draw' && !selPt) drawCursor();
+      if (tool === 'draw' && selPt) drawPreview();
+      if (tool === 'eraser' && eraserIdx !== null) drawEraserHL();
+      if (snap && tool === 'draw') drawSnapIndicator();
+      else if (tool === 'draw' && !selPt) drawCursorDot();
     }
 
-    function drawGrid(w,h) {
-      const tl = s2i(0,0), br = s2i(w,h);
-      const mi = Math.floor(Math.min(tl.x,br.x))-2, mx = Math.ceil(Math.max(tl.x,br.x))+2;
-      const mj = Math.floor(Math.min(tl.y,br.y))-2, my = Math.ceil(Math.max(tl.y,br.y))+2;
+    function drawGrid(w, h) {
+      // Use EXACT inverse (no snap) to find visible bounds
+      const tl = s2iExact(0, 0);
+      const br = s2iExact(w, h);
+      const mi = Math.floor(Math.min(tl.x, br.x)) - 3;
+      const mx = Math.ceil(Math.max(tl.x, br.x)) + 3;
+      const mj = Math.floor(Math.min(tl.y, br.y)) - 3;
+      const my = Math.ceil(Math.max(tl.y, br.y)) + 3;
 
-      // Subtle grid lines
-      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+      // Grid lines along the two isometric axes
       ctx.lineWidth = 0.5;
-      for (let j=mj;j<=my;j++) {
-        const a=i2s(mi,j), b=i2s(mx,j);
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      }
-      for (let i=mi;i<=mx;i++) {
-        const a=i2s(i,mj), b=i2s(i,my);
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+
+      // X-axis lines (constant y, varying x)
+      for (let j = mj; j <= my; j++) {
+        const a = i2s(mi, j), b = i2s(mx, j);
+        // Skip lines fully outside viewport
+        const minY = Math.min(a.y, b.y), maxY = Math.max(a.y, b.y);
+        if (maxY < -20 || minY > h + 20) continue;
+
+        ctx.strokeStyle = j === 0
+          ? 'rgba(245,158,11,0.18)'   // X-axis (y=0): amber
+          : 'rgba(255,255,255,0.06)'; // Regular: visible white
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
       }
 
-      // Dots
-      ctx.fillStyle = 'rgba(255,255,255,0.09)';
-      const r = Math.max(0.8, 1.2*zoom);
-      for (let i=mi;i<=mx;i++) for (let j=mj;j<=my;j++) {
-        const p=i2s(i,j);
-        if (p.x<-10||p.x>w+10||p.y<-10||p.y>h+10) continue;
-        ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.fill();
+      // Y-axis lines (constant x, varying y)
+      for (let i = mi; i <= mx; i++) {
+        const a = i2s(i, mj), b = i2s(i, my);
+        const minY = Math.min(a.y, b.y), maxY = Math.max(a.y, b.y);
+        if (maxY < -20 || minY > h + 20) continue;
+
+        ctx.strokeStyle = i === 0
+          ? 'rgba(52,211,153,0.18)'   // Y-axis (x=0): emerald
+          : 'rgba(255,255,255,0.06)'; // Regular: visible white
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
       }
 
-      // Origin
-      const o=i2s(0,0);
-      ctx.fillStyle='rgba(245,158,11,0.2)';
-      ctx.beginPath(); ctx.arc(o.x,o.y,Math.max(1.5,2.5*zoom),0,Math.PI*2); ctx.fill();
+      // Grid dots — brighter and slightly larger
+      const dotR = Math.max(1, 1.5 * zoom);
+      for (let i = mi; i <= mx; i++) {
+        for (let j = mj; j <= my; j++) {
+          const p = i2s(i, j);
+          if (p.x < -10 || p.x > w + 10 || p.y < -10 || p.y > h + 10) continue;
+
+          // Origin gets special treatment
+          if (i === 0 && j === 0) {
+            ctx.fillStyle = 'rgba(245,158,11,0.5)';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(2, 3 * zoom), 0, Math.PI * 2);
+            ctx.fill();
+          } else if (i === 0 || j === 0) {
+            // Axis dots: slightly brighter
+            ctx.fillStyle = 'rgba(255,255,255,0.22)';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, dotR, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Regular dots
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, dotR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
     }
 
     function drawLines() {
       ctx.lineCap = 'round';
       for (const l of lines) {
-        const a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-        ctx.strokeStyle=l.c; ctx.lineWidth=l.w*zoom; ctx.stroke();
+        const a = i2s(l.x1, l.y1), b = i2s(l.x2, l.y2);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = l.c; ctx.lineWidth = l.w * zoom; ctx.stroke();
       }
     }
 
     function drawPreview() {
-      const a=i2s(selPt.x,selPt.y);
-      const t = snap ? snapPt(mScreen.x,mScreen.y) : mIso;
-      const b=i2s(t.x,t.y);
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-      ctx.strokeStyle=color; ctx.lineWidth=width*zoom; ctx.lineCap='round';
-      ctx.globalAlpha=0.35; ctx.setLineDash([5*zoom,4*zoom]);
-      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+      const a = i2s(selPt.x, selPt.y);
+      const t = snap ? snapPt(mScreen.x, mScreen.y) : s2i(mScreen.x, mScreen.y);
+      const b = i2s(t.x, t.y);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = color; ctx.lineWidth = width * zoom; ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.35;
+      ctx.setLineDash([5 * zoom, 4 * zoom]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
     }
 
     function drawEraserHL() {
-      const l=lines[eraserIdx];
-      const a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-      ctx.strokeStyle='#ef4444'; ctx.lineWidth=(l.w+3)*zoom; ctx.lineCap='round';
-      ctx.globalAlpha=0.5; ctx.stroke(); ctx.globalAlpha=1;
+      const l = lines[eraserIdx];
+      const a = i2s(l.x1, l.y1), b = i2s(l.x2, l.y2);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = (l.w + 3) * zoom; ctx.lineCap = 'round';
+      ctx.globalAlpha = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
     }
 
-    function drawSnap() {
-      const sp=snapPt(mScreen.x,mScreen.y), sc=i2s(sp.x,sp.y);
-      const t=Date.now()/600, p=0.5+0.5*Math.sin(t);
-      const r=(4+p*2.5)*zoom;
-      ctx.beginPath(); ctx.arc(sc.x,sc.y,r,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(245,158,11,${0.25+p*0.25})`; ctx.lineWidth=1; ctx.stroke();
-      ctx.beginPath(); ctx.arc(sc.x,sc.y,Math.max(1,1.8*zoom),0,Math.PI*2);
-      ctx.fillStyle='#f59e0b'; ctx.fill();
+    function drawSnapIndicator() {
+      const sp = snapPt(mScreen.x, mScreen.y), sc = i2s(sp.x, sp.y);
+      const t = Date.now() / 600, p = 0.5 + 0.5 * Math.sin(t);
+      const r = (4 + p * 2.5) * zoom;
+      ctx.beginPath(); ctx.arc(sc.x, sc.y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(245,158,11,${0.25 + p * 0.25})`; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(sc.x, sc.y, Math.max(1, 1.8 * zoom), 0, Math.PI * 2);
+      ctx.fillStyle = '#f59e0b'; ctx.fill();
     }
 
-    function drawCursor() {
-      const sp=snapPt(mScreen.x,mScreen.y), sc=i2s(sp.x,sp.y);
-      ctx.beginPath(); ctx.arc(sc.x,sc.y,3*zoom,0,Math.PI*2);
-      ctx.fillStyle='rgba(245,158,11,0.3)'; ctx.fill();
+    function drawCursorDot() {
+      const sp = snapPt(mScreen.x, mScreen.y), sc = i2s(sp.x, sp.y);
+      ctx.beginPath(); ctx.arc(sc.x, sc.y, 3 * zoom, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(245,158,11,0.3)'; ctx.fill();
     }
 
-    // ── Hit test ──
-    function ptSegDist(px,py,x1,y1,x2,y2) {
-      const dx=x2-x1,dy=y2-y1,lsq=dx*dx+dy*dy;
-      if (!lsq) return Math.hypot(px-x1,py-y1);
-      let t=((px-x1)*dx+(py-y1)*dy)/lsq;
-      t=Math.max(0,Math.min(1,t));
-      return Math.hypot(px-(x1+t*dx),py-(y1+t*dy));
+    // Hit testing
+    function ptSegDist(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1, dy = y2 - y1, lsq = dx * dx + dy * dy;
+      if (!lsq) return Math.hypot(px - x1, py - y1);
+      let t = ((px - x1) * dx + (py - y1) * dy) / lsq;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
     }
-    function findLine(sx,sy) {
-      const th=10*zoom;
-      for (let i=lines.length-1;i>=0;i--) {
-        const l=lines[i], a=i2s(l.x1,l.y1), b=i2s(l.x2,l.y2);
-        if (ptSegDist(sx,sy,a.x,a.y,b.x,b.y)<th) return i;
+    function findLine(sx, sy) {
+      const th = 10 * zoom;
+      for (let i = lines.length - 1; i >= 0; i--) {
+        const l = lines[i], a = i2s(l.x1, l.y1), b = i2s(l.x2, l.y2);
+        if (ptSegDist(sx, sy, a.x, a.y, b.x, b.y) < th) return i;
       }
       return null;
     }
 
-    // ── Events ──
+    // Events
     function gp(e) {
-      if (e.touches&&e.touches.length) return {x:e.touches[0].clientX,y:e.touches[0].clientY};
-      if (e.changedTouches&&e.changedTouches.length) return {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};
-      return {x:e.clientX,y:e.clientY};
+      if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (e.changedTouches && e.changedTouches.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      return { x: e.clientX, y: e.clientY };
     }
 
     function startPan(e) {
-      isPan=true; const p=gp(e);
-      panSX=p.x; panSY=p.y; panOX=ox; panOY=oy; dragged=false; updCursor();
+      isPan = true; const p = gp(e);
+      panSX = p.x; panSY = p.y; panOX = ox; panOY = oy; dragged = false; updCursor();
     }
-    function endPan() { isPan=false; updCursor(); }
-
+    function endPan() { isPan = false; updCursor(); }
     function updCursor() {
-      canvas.className='';
-      if (tool==='pan'||spaceHeld) canvas.classList.add(isPan?'panning':'pan-mode');
-      else if (tool==='eraser') canvas.classList.add('eraser-mode');
+      canvas.className = '';
+      if (tool === 'pan' || spaceHeld) canvas.classList.add(isPan ? 'panning' : 'pan-mode');
+      else if (tool === 'eraser') canvas.classList.add('eraser-mode');
+    }
+    function updCoords(sx, sy) {
+      const i = s2iExact(sx, sy);
+      coordsEl.textContent = `${Math.round(i.x)}, ${Math.round(i.y)}  ${Math.round(zoom * 100)}%`;
     }
 
-    function updCoords(sx,sy) {
-      const i=s2i(sx,sy);
-      coordsEl.textContent=`${Math.round(i.x)}, ${Math.round(i.y)}  ${Math.round(zoom*100)}%`;
-    }
-
-    function handleClick(sx,sy) {
-      if (tool==='draw') {
-        const pt = snap ? snapPt(sx,sy) : s2i(sx,sy);
-        if (!selPt) { selPt=pt; }
+    function handleClick(sx, sy) {
+      if (tool === 'draw') {
+        const pt = snap ? snapPt(sx, sy) : s2i(sx, sy);
+        if (!selPt) { selPt = pt; }
         else {
-          if (selPt.x!==pt.x||selPt.y!==pt.y) {
-            lines.push({x1:selPt.x,y1:selPt.y,x2:pt.x,y2:pt.y,c:color,w:width});
-            undone=[];
+          if (selPt.x !== pt.x || selPt.y !== pt.y) {
+            lines.push({ x1: selPt.x, y1: selPt.y, x2: pt.x, y2: pt.y, c: color, w: width });
+            undone = [];
           }
-          selPt=pt;
+          selPt = pt;
         }
-      } else if (tool==='eraser') {
-        const idx=findLine(sx,sy);
-        if (idx!==null) { undone.push(lines.splice(idx,1)[0]); eraserIdx=null; }
+      } else if (tool === 'eraser') {
+        const idx = findLine(sx, sy);
+        if (idx !== null) { undone.push(lines.splice(idx, 1)[0]); eraserIdx = null; }
       }
     }
 
     // Mouse
     canvas.addEventListener('mousedown', e => {
-      if (e.button===1) { e.preventDefault(); startPan(e); return; }
-      if (e.button!==0) return;
-      mdTime=Date.now(); mdPos=gp(e); dragged=false;
-      if (tool==='pan'||spaceHeld) startPan(e);
+      if (e.button === 1) { e.preventDefault(); startPan(e); return; }
+      if (e.button !== 0) return;
+      mdTime = Date.now(); mdPos = gp(e); dragged = false;
+      if (tool === 'pan' || spaceHeld) startPan(e);
     });
     canvas.addEventListener('mousemove', e => {
-      const p=gp(e); mScreen=p; mIso=s2i(p.x,p.y); updCoords(p.x,p.y);
+      const p = gp(e); mScreen = p; mIso = s2iExact(p.x, p.y); updCoords(p.x, p.y);
       if (isPan) {
-        const dx=p.x-panSX, dy=p.y-panSY;
-        if (Math.abs(dx)>3||Math.abs(dy)>3) dragged=true;
-        ox=panOX+dx; oy=panOY+dy; return;
+        const dx = p.x - panSX, dy = p.y - panSY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragged = true;
+        ox = panOX + dx; oy = panOY + dy; return;
       }
-      eraserIdx = tool==='eraser' ? findLine(p.x,p.y) : null;
+      eraserIdx = tool === 'eraser' ? findLine(p.x, p.y) : null;
     });
     canvas.addEventListener('mouseup', e => {
-      if (e.button!==0) return;
+      if (e.button !== 0) return;
       if (isPan) { endPan(); return; }
-      const p=gp(e), dt=Date.now()-mdTime, d=Math.hypot(p.x-mdPos.x,p.y-mdPos.y);
-      if (dt<300 && d<6) handleClick(p.x,p.y);
+      const p = gp(e), dt = Date.now() - mdTime, d = Math.hypot(p.x - mdPos.x, p.y - mdPos.y);
+      if (dt < 300 && d < 6) handleClick(p.x, p.y);
     });
-    canvas.addEventListener('dblclick', () => { if (tool==='draw') { selPt=null; } });
+    canvas.addEventListener('dblclick', () => { if (tool === 'draw') selPt = null; });
     canvas.addEventListener('wheel', e => {
       e.preventDefault();
-      const p=gp(e), d=e.deltaY>0?-0.07:0.07;
-      const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+d));
-      ox=p.x-(p.x-ox)*(zoom/oz); oy=p.y-(p.y-oy)*(zoom/oz);
-    }, {passive:false});
+      const p = gp(e), d = e.deltaY > 0 ? -0.07 : 0.07;
+      const oz = zoom; zoom = Math.min(5, Math.max(0.15, zoom + d));
+      ox = p.x - (p.x - ox) * (zoom / oz); oy = p.y - (p.y - oy) * (zoom / oz);
+    }, { passive: false });
 
     // Touch
-    let tDist=0, tCenter={x:0,y:0}, tMode=null;
+    let tDist = 0, tCenter = { x: 0, y: 0 }, tMode = null;
     canvas.addEventListener('touchstart', e => {
       e.preventDefault();
-      if (e.touches.length===2) {
-        tMode='pinch'; isPan=false;
-        const a=e.touches[0],b=e.touches[1];
-        tDist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
-        tCenter={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};
+      if (e.touches.length === 2) {
+        tMode = 'pinch'; isPan = false;
+        const a = e.touches[0], b = e.touches[1];
+        tDist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+        tCenter = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
         return;
       }
-      if (e.touches.length===1) {
-        tMode='single'; const p=gp(e); mdTime=Date.now(); mdPos={...p}; dragged=false; mScreen=p;
-        if (tool==='pan') startPan(e);
+      if (e.touches.length === 1) {
+        tMode = 'single'; const p = gp(e); mdTime = Date.now(); mdPos = { ...p }; dragged = false; mScreen = p;
+        if (tool === 'pan') startPan(e);
       }
-    },{passive:false});
+    }, { passive: false });
     canvas.addEventListener('touchmove', e => {
       e.preventDefault();
-      if (e.touches.length===2&&tMode==='pinch') {
-        const a=e.touches[0],b=e.touches[1];
-        const d=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
-        const c={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};
-        const s=d/Math.max(1,tDist), delta=(s-1)*0.5;
-        const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+delta));
-        ox=c.x-(c.x-ox)*(zoom/oz); oy=c.y-(c.y-oy)*(zoom/oz);
-        ox+=c.x-tCenter.x; oy+=c.y-tCenter.y;
-        tDist=d; tCenter=c; return;
+      if (e.touches.length === 2 && tMode === 'pinch') {
+        const a = e.touches[0], b = e.touches[1];
+        const d = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+        const c = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+        const s = d / Math.max(1, tDist), delta = (s - 1) * 0.5;
+        const oz = zoom; zoom = Math.min(5, Math.max(0.15, zoom + delta));
+        ox = c.x - (c.x - ox) * (zoom / oz); oy = c.y - (c.y - oy) * (zoom / oz);
+        ox += c.x - tCenter.x; oy += c.y - tCenter.y;
+        tDist = d; tCenter = c; return;
       }
-      if (e.touches.length===1&&tMode==='single') {
-        const p=gp(e); mScreen=p; mIso=s2i(p.x,p.y); updCoords(p.x,p.y);
+      if (e.touches.length === 1 && tMode === 'single') {
+        const p = gp(e); mScreen = p; mIso = s2iExact(p.x, p.y); updCoords(p.x, p.y);
         if (isPan) {
-          const dx=p.x-panSX,dy=p.y-panSY;
-          if (Math.abs(dx)>5||Math.abs(dy)>5) dragged=true;
-          ox=panOX+dx; oy=panOY+dy;
+          const dx = p.x - panSX, dy = p.y - panSY;
+          if (Math.abs(dx) > 5 || Math.abs(dy) > 5) dragged = true;
+          ox = panOX + dx; oy = panOY + dy;
         }
-        eraserIdx=tool==='eraser'?findLine(p.x,p.y):null;
+        eraserIdx = tool === 'eraser' ? findLine(p.x, p.y) : null;
       }
-    },{passive:false});
+    }, { passive: false });
     canvas.addEventListener('touchend', e => {
       e.preventDefault();
-      if (tMode==='pinch'&&e.touches.length<2) {
-        tMode=null;
-        if (e.touches.length===1) { const p=gp(e); mdTime=Date.now(); mdPos={...p}; dragged=false; mScreen=p; if(tool==='pan')startPan(e); }
+      if (tMode === 'pinch' && e.touches.length < 2) {
+        tMode = null;
+        if (e.touches.length === 1) { const p = gp(e); mdTime = Date.now(); mdPos = { ...p }; dragged = false; mScreen = p; if (tool === 'pan') startPan(e); }
         return;
       }
-      if (tMode==='single') {
+      if (tMode === 'single') {
         if (isPan) endPan();
-        else if (Date.now()-mdTime<300&&!dragged) handleClick(mdPos.x,mdPos.y);
-        tMode=null;
+        else if (Date.now() - mdTime < 300 && !dragged) handleClick(mdPos.x, mdPos.y);
+        tMode = null;
       }
-    },{passive:false});
+    }, { passive: false });
 
     // Keyboard
     addEventListener('keydown', e => {
-      if (e.target.tagName==='INPUT') return;
-      if (e.key===' '&&!spaceHeld) { e.preventDefault(); spaceHeld=true; updCursor(); }
-      if (e.key==='d'||e.key==='D') setTool('draw');
-      if (e.key==='e'||e.key==='E') setTool('eraser');
-      if (e.key==='g'||e.key==='G') { showGrid=!showGrid; document.getElementById('gridToggle').checked=showGrid; }
-      if (e.key==='s'&&!e.ctrlKey&&!e.metaKey) { snap=!snap; document.getElementById('snapToggle').checked=snap; }
-      if (e.key==='Escape') { selPt=null; document.getElementById('helpOverlay').classList.remove('open'); document.getElementById('settingsPanel').classList.remove('open'); }
-      if ((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&!e.shiftKey) { e.preventDefault(); undo(); }
-      if ((e.key==='y'||e.key==='Y')&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); redo(); }
-      if ((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)&&e.shiftKey) { e.preventDefault(); redo(); }
-      if (e.key==='='||e.key==='+') { e.preventDefault(); zoomAt(innerWidth/2,innerHeight/2,0.12); }
-      if (e.key==='-') { e.preventDefault(); zoomAt(innerWidth/2,innerHeight/2,-0.12); }
-      if ((e.key==='s'||e.key==='S')&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); saveLines(); }
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === ' ' && !spaceHeld) { e.preventDefault(); spaceHeld = true; updCursor(); }
+      if (e.key === 'd' || e.key === 'D') setTool('draw');
+      if (e.key === 'e' || e.key === 'E') setTool('eraser');
+      if (e.key === 'g' || e.key === 'G') { showGrid = !showGrid; document.getElementById('gridToggle').checked = showGrid; }
+      if (e.key === 's' && !e.ctrlKey && !e.metaKey) { snap = !snap; document.getElementById('snapToggle').checked = snap; }
+      if (e.key === 'Escape') { selPt = null; document.getElementById('helpOverlay').classList.remove('open'); document.getElementById('settingsPanel').classList.remove('open'); }
+      if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey) && !e.shiftKey) { e.preventDefault(); undo(); }
+      if ((e.key === 'y' || e.key === 'Y') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); redo(); }
+      if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey) && e.shiftKey) { e.preventDefault(); redo(); }
+      if (e.key === '=' || e.key === '+') { e.preventDefault(); zoomAt(innerWidth / 2, innerHeight / 2, 0.12); }
+      if (e.key === '-') { e.preventDefault(); zoomAt(innerWidth / 2, innerHeight / 2, -0.12); }
+      if ((e.key === 's' || e.key === 'S') && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveLines(); }
     });
     addEventListener('keyup', e => {
-      if (e.key===' ') { spaceHeld=false; if(isPan)endPan(); updCursor(); }
+      if (e.key === ' ') { spaceHeld = false; if (isPan) endPan(); updCursor(); }
     });
 
-    function zoomAt(sx,sy,d) {
-      const oz=zoom; zoom=Math.min(5,Math.max(0.15,zoom+d));
-      ox=sx-(sx-ox)*(zoom/oz); oy=sy-(sy-oy)*(zoom/oz);
+    function zoomAt(sx, sy, d) {
+      const oz = zoom; zoom = Math.min(5, Math.max(0.15, zoom + d));
+      ox = sx - (sx - ox) * (zoom / oz); oy = sy - (sy - oy) * (zoom / oz);
     }
 
-    // ── Tool selection ──
+    // Tool selection
     function setTool(t) {
-      tool=t; selPt=null; eraserIdx=null;
-      document.querySelectorAll('#topBar .tb').forEach(b => b.classList.toggle('on', b.dataset.tool===t));
+      tool = t; selPt = null; eraserIdx = null;
+      document.querySelectorAll('#topBar .tb').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
       updCursor();
     }
     document.querySelectorAll('#topBar .tb').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
 
-    // ── Color ──
+    // Color
     document.querySelectorAll('.csw').forEach(s => {
       s.addEventListener('click', () => {
-        color=s.dataset.c;
-        document.querySelectorAll('.csw').forEach(x=>x.classList.remove('on'));
+        color = s.dataset.c;
+        document.querySelectorAll('.csw').forEach(x => x.classList.remove('on'));
         s.classList.add('on');
-        document.getElementById('customColor').value=color;
+        document.getElementById('customColor').value = color;
       });
     });
     document.getElementById('customColor').addEventListener('input', e => {
-      color=e.target.value;
-      document.querySelectorAll('.csw').forEach(x=>x.classList.remove('on'));
+      color = e.target.value;
+      document.querySelectorAll('.csw').forEach(x => x.classList.remove('on'));
     });
 
-    // ── Width ──
+    // Width
     const wSlider = document.getElementById('widthSlider');
     const wLabel = document.getElementById('widthLabel');
-    wSlider.addEventListener('input', () => { width=parseFloat(wSlider.value); wLabel.textContent=width+'px'; });
+    wSlider.addEventListener('input', () => { width = parseFloat(wSlider.value); wLabel.textContent = width + 'px'; });
 
-    // ── Toggles ──
-    document.getElementById('gridToggle').addEventListener('change', e => showGrid=e.target.checked);
-    document.getElementById('snapToggle').addEventListener('change', e => snap=e.target.checked);
+    // Toggles
+    document.getElementById('gridToggle').addEventListener('change', e => showGrid = e.target.checked);
+    document.getElementById('snapToggle').addEventListener('change', e => snap = e.target.checked);
 
-    // ── Gear / Settings panel ──
-    document.getElementById('gearBtn').addEventListener('click', () => {
-      document.getElementById('settingsPanel').classList.toggle('open');
-    });
+    // Gear
+    document.getElementById('gearBtn').addEventListener('click', () => document.getElementById('settingsPanel').classList.toggle('open'));
 
-    // ── Actions ──
-    function undo() { if(lines.length) { undone.push(lines.pop()); toast('Undo'); } }
-    function redo() { if(undone.length) { lines.push(undone.pop()); toast('Redo'); } }
-    function clearAll() { if(!lines.length)return; undone.push(...lines.reverse()); lines=[]; selPt=null; toast('Cleared'); }
+    // Actions
+    function undo() { if (lines.length) { undone.push(lines.pop()); toast('Undo'); } }
+    function redo() { if (undone.length) { lines.push(undone.pop()); toast('Redo'); } }
+    function clearAll() { if (!lines.length) return; undone.push(...lines.reverse()); lines = []; selPt = null; toast('Cleared'); }
 
     document.getElementById('undoBtn').addEventListener('click', undo);
     document.getElementById('redoBtn').addEventListener('click', redo);
@@ -744,37 +624,37 @@
     document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpOverlay').classList.toggle('open'));
 
     function saveLines() {
-      const fn=document.getElementById('filename').value||'untitled';
-      const blob=new Blob([JSON.stringify({v:2,lines})],{type:'application/json'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob); a.download=fn+'.isk'; a.click();
+      const fn = document.getElementById('filename').value || 'untitled';
+      const blob = new Blob([JSON.stringify({ v: 2, lines })], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = fn + '.isk'; a.click();
       URL.revokeObjectURL(a.href); toast('Saved');
     }
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-      const f=e.target.files[0]; if(!f)return;
-      const r=new FileReader();
-      r.onload=evt => {
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+      const f = e.target.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = evt => {
         try {
-          const d=JSON.parse(evt.target.result);
-          lines=Array.isArray(d)?d:d.lines||[];
-          undone=[]; selPt=null; toast('Loaded '+lines.length+' lines');
+          const d = JSON.parse(evt.target.result);
+          lines = Array.isArray(d) ? d : d.lines || [];
+          undone = []; selPt = null; toast('Loaded ' + lines.length + ' lines');
         } catch { toast('Invalid file'); }
       };
-      r.readAsText(f); this.value='';
+      r.readAsText(f); this.value = '';
     });
 
-    // ── Toast ──
+    // Toast
     let tTO;
-    function toast(m) { toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(tTO); tTO=setTimeout(()=>toastEl.classList.remove('show'),1400); }
+    function toast(m) { toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(tTO); tTO = setTimeout(() => toastEl.classList.remove('show'), 1400); }
 
-    // ── Close settings on outside click ──
+    // Close settings on outside click
     addEventListener('mousedown', e => {
-      const sp=document.getElementById('settingsPanel');
-      const gb=document.getElementById('gearBtn');
+      const sp = document.getElementById('settingsPanel');
+      const gb = document.getElementById('gearBtn');
       if (sp.classList.contains('open') && !sp.contains(e.target) && !gb.contains(e.target)) sp.classList.remove('open');
     });
 
-    // ── Loop ──
+    // Render loop
     (function loop() { draw(); requestAnimationFrame(loop); })();
   </script>
 </body>
